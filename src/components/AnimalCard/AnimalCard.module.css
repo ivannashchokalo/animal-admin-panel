@@ -1,0 +1,19 @@
+.badge {
+  display: block;
+  border-radius: 100px;
+  width: 15px;
+  height: 15px;
+}
+
+.available {
+  background-color: #28a745;
+}
+
+.reserved {
+  background-color: #ffc107;
+  color: black;
+}
+
+.sold {
+  background-color: #6c757d;
+}
