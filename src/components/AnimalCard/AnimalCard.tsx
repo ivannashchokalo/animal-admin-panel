@@ -8,7 +8,7 @@ interface AnimalCardProps {
 
 export default function AnimalGard({ animal }: AnimalCardProps) {
   return (
-    <div>
+    <li>
       <img
         src="https://picsum.photos/id/237/200/300"
         alt={animal.name}
@@ -22,6 +22,6 @@ export default function AnimalGard({ animal }: AnimalCardProps) {
         <p>{animal.price}</p>
         <span className={clsx(css.badge, css[animal.status])}></span>
       </div>
-    </div>
+    </li>
   );
 }

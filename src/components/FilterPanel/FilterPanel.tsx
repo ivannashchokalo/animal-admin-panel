@@ -1,4 +1,4 @@
-import ResetFiltersBtn from "../ResetFiltersBtn/ResetFiltersBtn";
+import Button from "../Button/ResetFiltersBtn";
 import SearchBox from "../SearchBox/SearchBox";
 import StatusFilter from "../StatusFilter/StatusFilter";
 import TypeFilter from "../TypeFilter/TypeFilter";
@@ -12,6 +12,7 @@ interface FilterPanelProps {
   onStatusChange: (value: string) => void;
   onPageChange: (value: number) => void;
 }
+
 export default function FilterPanel({
   searchText,
   onSearchChange,
@@ -21,6 +22,13 @@ export default function FilterPanel({
   onStatusChange,
   onPageChange,
 }: FilterPanelProps) {
+  const handleResetFilters = () => {
+    onSearchChange("");
+    onStatusChange("");
+    onTypeChange("");
+    onPageChange(1);
+  };
+
   return (
     <div>
       <SearchBox
@@ -30,11 +38,9 @@ export default function FilterPanel({
       />
       <TypeFilter type={type} onTypeChange={onTypeChange} />
       <StatusFilter status={status} onStatusChange={onStatusChange} />
-      <ResetFiltersBtn
-        onSearchChange={onSearchChange}
-        onTypeChange={onTypeChange}
-        onStatusChange={onStatusChange}
-      />
+      <Button type={"button"} onClick={handleResetFilters}>
+        Reset filters
+      </Button>
     </div>
   );
 }

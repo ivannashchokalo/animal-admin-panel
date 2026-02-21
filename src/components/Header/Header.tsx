@@ -10,6 +10,9 @@ export default function Header() {
         <Link to="/animals">Animals</Link>
       </li>
       <li>
+        <Link to="/animals/new">Add animal</Link>
+      </li>
+      <li>
         <Link to="/requests">Requests</Link>
       </li>
       <li>
