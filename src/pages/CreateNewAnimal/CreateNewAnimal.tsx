@@ -24,6 +24,7 @@ export default function CreateNewAnimal() {
     defaultValues: {
       photo: [],
     },
+    mode: "onBlur",
   });
 
   const onSubmit = (data: CreateNewAnimalForm) => {

@@ -10,7 +10,6 @@ export default function DropzoneField({ value, onChange }: DropzoneFieldProps) {
     multiple: true,
     accept: { "image/*": [] },
     onDrop: (acceptedFiles) => {
-      // const file = acceptedFiles[0];
       if (acceptedFiles) {
         onChange(acceptedFiles);
       }
