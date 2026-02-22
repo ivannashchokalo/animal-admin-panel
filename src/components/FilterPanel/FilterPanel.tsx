@@ -1,4 +1,4 @@
-import Button from "../Button/ResetFiltersBtn";
+import Button from "../Button/Button";
 import SearchBox from "../SearchBox/SearchBox";
 import StatusFilter from "../StatusFilter/StatusFilter";
 import TypeFilter from "../TypeFilter/TypeFilter";
