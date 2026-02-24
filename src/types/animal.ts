@@ -10,3 +10,12 @@ export interface Animal {
   images: string[];
   createdAt: string;
 }
+
+export type CreateNewAnimal = Pick<Animal, "name" | "type" | "breed"> &
+  Partial<Omit<Animal, "id" | "createdAt" | "name" | "type" | "breed">>;
+
+export type AnimalId = Animal["id"]; //??????
+
+export type UpdateAnimalData = { id: Animal["id"] } & Partial<
+  Omit<Animal, "id" | "createdAt">
+>;

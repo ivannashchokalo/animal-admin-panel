@@ -1,19 +1,17 @@
-interface SearchBoxProps {
-  searchText: string;
-  onSearchChange: (value: string) => void;
-  onPageChange: (value: number) => void;
-}
-
-export default function SearchBox({
-  searchText,
-  onSearchChange,
-  onPageChange,
-}: SearchBoxProps) {
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onPageChange(1);
-    onSearchChange(e.target.value);
+export default function SearchBox({ onSearch }) {
+  const handleSubmit = (formData: FormData) => {
+    const value = formData.get("search") as string;
+    onSearch((prev) => {
+      const params = new URLSearchParams(prev);
+      params.set("search", `${value}`);
+      return params;
+    });
   };
+
   return (
-    <input type="text" onChange={handleChange} defaultValue={searchText} />
+    <form action={handleSubmit}>
+      <input type="text" name="search" />
+      <button>Search</button>
+    </form>
   );
 }

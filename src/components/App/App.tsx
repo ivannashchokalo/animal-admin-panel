@@ -10,16 +10,18 @@ import CreateNewAnimal from "../../pages/CreateNewAnimal/CreateNewAnimal";
 
 function App() {
   return (
-    <Routes>
-      <Route path="/" element={<Layout />}>
-        <Route index element={<Home />} />
-        <Route path="animals" element={<Animals />} />
-        <Route path="animals/:id" element={<AnimalDetailes />} />
-        <Route path="animals/new" element={<CreateNewAnimal />} />
-        <Route path="requests" element={<Request />} />
-        <Route path="settings" element={<Settings />} />
-      </Route>
-    </Routes>
+    <>
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<Home />} />
+          <Route path="animals" element={<Animals />} />
+          <Route path="animals/:id" element={<AnimalDetailes />} />
+          <Route path="animals/new" element={<CreateNewAnimal />} />
+          <Route path="requests" element={<Request />} />
+          <Route path="settings" element={<Settings />} />
+        </Route>
+      </Routes>
+    </>
   );
 }
 

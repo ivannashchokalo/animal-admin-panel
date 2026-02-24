@@ -2,7 +2,7 @@ import { useDropzone } from "react-dropzone";
 
 interface DropzoneFieldProps {
   value: File[];
-  onChange: (files: File[]) => void;
+  onChange: (files: File[] | string) => void;
 }
 
 export default function DropzoneField({ value, onChange }: DropzoneFieldProps) {

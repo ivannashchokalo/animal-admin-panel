@@ -4,10 +4,11 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { NumericFormat } from "react-number-format";
 import { useMutation } from "@tanstack/react-query";
-import { addAnimal } from "../../services/animalsService";
+import { updateAnimal } from "../../services/animalsService";
 import toast, { Toaster } from "react-hot-toast";
+import type { Animal } from "../../types/animal";
 
-interface CreateNewAnimalForm {
+interface UpdateAnimalForm {
   name: string;
   animal: "dog" | "cat";
   breed: string;
@@ -17,27 +18,36 @@ interface CreateNewAnimalForm {
   photo: File[];
 }
 
-export default function CreateNewAnimal() {
+interface UpdateAnimalFormProps {
+  animal: Animal;
+}
+
+export default function UpdateAnimalForm({ animal }: UpdateAnimalFormProps) {
   const {
     register,
     handleSubmit,
     formState: { errors },
     reset,
     control,
-  } = useForm<CreateNewAnimalForm>({
+  } = useForm<UpdateAnimalForm>({
     defaultValues: {
-      photo: [],
+      name: animal.name,
+      animal: animal.type,
+      breed: animal.breed,
+      birthDate: animal.birthDate ? new Date(animal.birthDate) : null,
+      price: animal.price,
+      description: animal.description,
+      photo: animal.images,
     },
     mode: "onBlur",
   });
 
   const mutation = useMutation({
-    mutationFn: addAnimal,
-    onMutate: () => toast.loading("Creating..."),
+    mutationFn: updateAnimal,
+    onMutate: () => toast.loading("Updating..."),
     onSuccess: () => {
       toast.dismiss();
-      // navigate("/animals");
-      toast.success("Created");
+      toast.success("Updated");
       reset();
     },
     onError: () => {
@@ -46,8 +56,11 @@ export default function CreateNewAnimal() {
     },
   });
 
-  const onSubmit = (data: CreateNewAnimalForm) => {
-    mutation.mutate(data); // !!!!
+  const onSubmit = (data: UpdateAnimalForm) => {
+    mutation.mutate({
+      id: animal.id,
+      ...data,
+    });
   };
 
   return (
