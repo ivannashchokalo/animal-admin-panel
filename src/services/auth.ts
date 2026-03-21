@@ -1,21 +1,32 @@
-import type { AuthData, User } from "../types/user";
-import { api } from "./api";
+import { fetchBaseQuery } from "@reduxjs/toolkit/query";
+import { createApi } from "@reduxjs/toolkit/query/react";
 
-export const register = async (userData: AuthData) => {
-  //   console.log(userData);
+const baseQuery = fetchBaseQuery({
+  baseUrl: "http://localhost:3000",
+  credentials: "include",
+});
 
-  const { data } = await api.post<User>("/auth/register", userData);
-  //   console.log(data);
+export const authApi = createApi({
+  reducerPath: "auth",
 
-  return data;
-};
+  baseQuery,
 
-export const login = async (userData: AuthData) => {
-  const { data } = await api.post<User>("/auth/login", userData);
-  return data;
-};
+  endpoints: (builder) => ({
+    login: builder.mutation({
+      query: (data) => ({
+        url: "/auth/login",
+        method: "POST",
+        body: data,
+      }),
+    }),
 
-export const logout = async () => {
-  const { data } = await api.post("/auth/logout");
-  return data;
-};
+    logout: builder.mutation<void, void>({
+      query: () => ({
+        url: "/auth/logout",
+        method: "POST",
+      }),
+    }),
+  }),
+});
+
+export const { useLoginMutation, useLogoutMutation } = authApi;
