@@ -1,16 +1,6 @@
 import type { Children } from "../../types/children";
+import styles from "./Grid.module.scss";
 
 export default function Grid({ children }: Children) {
-  return (
-    <ul
-      style={{
-        display: "flex",
-        gap: 20,
-        flexWrap: "wrap",
-        padding: "20px 50px",
-      }}
-    >
-      {children}
-    </ul>
-  );
+  return <ul className={styles.list}>{children}</ul>;
 }

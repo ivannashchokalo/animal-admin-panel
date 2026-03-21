@@ -1,55 +1,96 @@
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { fetchAnimals } from "../../services/animalsService";
 import AnimalsList from "../../components/AnimalsList/AnimalsList";
-import { useState } from "react";
 import FilterPanel from "../../components/FilterPanel/FilterPanel";
 import ReactPaginate from "react-paginate";
-import css from "./Animals.module.css";
 import { Toaster } from "react-hot-toast";
-import { useSearchParams } from "react-router";
+import { Link, useLocation, useSearchParams } from "react-router";
+import styles from "./Animals.module.scss";
+import Icon from "../../components/Icon/Icon";
+import Container from "../../components/Container/Container";
+import Section from "../../components/Section/Section";
 
 export default function Animals() {
-  const [searchParams, setSearchParams] = useSearchParams(); // розібрати
-  const [type, setType] = useState("");
-  const [status, setStatus] = useState("");
-  const [page, setPage] = useState(1);
-  // const debouncedSetSearchText = useDebouncedCallback(setSearchText, 300);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const search = searchParams.get("search") || "";
+  const type = searchParams.get("type") || "";
+  const status = searchParams.get("status") || "";
+  const page = Number(searchParams.get("page")) || 1;
+  const location = useLocation();
 
-  const search = searchParams.get("search") as string;
-  const totalPage = 2;
+  const handlePageChange = ({ selected }: { selected: number }) => {
+    const params = new URLSearchParams(searchParams);
+    params.set("page", String(selected + 1));
+    setSearchParams(params);
+  };
 
   const { data, isError, isLoading } = useQuery({
-    queryKey: ["animals", search, type, status, page],
-    queryFn: () => fetchAnimals(search, type, status, page),
-    placeholderData: keepPreviousData,
+    queryKey: ["animals", page, type, status, search],
+    queryFn: () => fetchAnimals(page, search, type, status),
   });
+
   return (
     <main>
-      <Toaster />
-      <FilterPanel
-        onSearch={setSearchParams}
-        type={type}
-        onTypeChange={setType}
-        status={status}
-        onStatusChange={setStatus}
-        onPageChange={setPage}
-      />
-      {isLoading && <strong>Loading...</strong>}
-      {isError && <strong>Something went wrong</strong>}
-      {data && data.length > 0 && <AnimalsList animals={data} />}
-      <ReactPaginate
-        pageCount={totalPage}
-        onPageChange={({ selected }) => setPage(selected + 1)}
-        forcePage={page - 1}
-        pageRangeDisplayed={5}
-        marginPagesDisplayed={1}
-        previousLabel="←"
-        nextLabel="→"
-        breakLabel="..."
-        renderOnZeroPageCount={null}
-        containerClassName={css.pagination}
-        activeClassName={css.active}
-      />
+      <Section>
+        <Container>
+          <div className={styles.wrapper}>
+            <h1 className={styles.title}>
+              Animals{" "}
+              <span className={styles.subTitle}>
+                Manage the list of all animals in the system.
+              </span>
+            </h1>
+            <Link
+              to="/animals/new"
+              className={styles.addButton}
+              state={{ from: location }}
+            >
+              <Icon name="plus" size={20} className={styles.plus} />
+              Add animal
+            </Link>
+          </div>
+          <Toaster />
+          <div className={styles.filter}>
+            <FilterPanel />
+          </div>
+
+          {isLoading && <strong>Loading...</strong>}
+          {isError && <strong>Something went wrong</strong>}
+          <div className={styles.animals}>
+            {data?.animals && data.animals.length > 0 && (
+              <AnimalsList animals={data.animals} />
+            )}
+          </div>
+          {data?.totalPages > 1 && (
+            <ReactPaginate
+              pageCount={data?.totalPages}
+              onPageChange={handlePageChange}
+              forcePage={page - 1}
+              pageRangeDisplayed={5}
+              marginPagesDisplayed={2}
+              previousLabel={
+                <Icon
+                  name="arrow-l"
+                  size={24}
+                  className={styles.paginateArrow}
+                />
+              }
+              nextLabel={
+                <Icon
+                  name="arrow-r"
+                  size={24}
+                  className={styles.paginateArrow}
+                />
+              }
+              breakLabel="..."
+              renderOnZeroPageCount={null}
+              containerClassName={styles.pagination}
+              activeClassName={styles.active}
+              disabledClassName={styles.disabled}
+            />
+          )}
+        </Container>
+      </Section>
     </main>
   );
 }

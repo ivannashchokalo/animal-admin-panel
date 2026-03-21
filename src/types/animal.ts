@@ -1,9 +1,10 @@
 export interface Animal {
-  id: string;
+  _id: string;
   name: string;
   type: "dog" | "cat";
   breed: string;
-  birthDate: number;
+  sex: "male" | "female";
+  birthDate: Date;
   price: number;
   status: "available" | "reserved" | "sold";
   description: string;
@@ -11,11 +12,13 @@ export interface Animal {
   createdAt: string;
 }
 
-export type CreateNewAnimal = Pick<Animal, "name" | "type" | "breed"> &
-  Partial<Omit<Animal, "id" | "createdAt" | "name" | "type" | "breed">>;
+export type CreateNewAnimal = Pick<Animal, "name" | "type" | "breed" | "sex"> &
+  Partial<
+    Omit<Animal, "_id" | "createdAt" | "name" | "type" | "breed" | "sex">
+  >;
 
-export type AnimalId = Animal["id"]; //??????
+export type AnimalId = Animal["_id"];
 
-export type UpdateAnimalData = { id: Animal["id"] } & Partial<
-  Omit<Animal, "id" | "createdAt">
+export type UpdateAnimalData = { id: Animal["_id"] } & Partial<
+  Omit<Animal, "_id" | "createdAt">
 >;

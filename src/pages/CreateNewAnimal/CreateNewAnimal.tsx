@@ -6,18 +6,29 @@ import { NumericFormat } from "react-number-format";
 import { useMutation } from "@tanstack/react-query";
 import { addAnimal } from "../../services/animalsService";
 import toast, { Toaster } from "react-hot-toast";
+import Section from "../../components/Section/Section";
+import Container from "../../components/Container/Container";
+import styles from "./CreateNewAnimal.module.scss";
+import { useLocation } from "react-router";
+import Select from "react-select";
+import { selectStyles } from "../../components/Select/selectStyles";
+import DropdownIndicator from "../../components/Select/DropdownIndicator";
+import type { OptionType } from "../../types/select";
+import Breadcrumbs from "../../components/Breadcrumbs/Breadcrumbs";
 
 interface CreateNewAnimalForm {
   name: string;
-  animal: "dog" | "cat";
+  type: "dog" | "cat";
   breed: string;
-  birthDate: Date | null;
+  sex: "male" | "female";
+  birthDate: Date;
   price: number;
   description: string;
   photo: File[];
 }
 
 export default function CreateNewAnimal() {
+  const location = useLocation();
   const {
     register,
     handleSubmit,
@@ -26,6 +37,7 @@ export default function CreateNewAnimal() {
     control,
   } = useForm<CreateNewAnimalForm>({
     defaultValues: {
+      type: "dog",
       photo: [],
     },
     mode: "onBlur",
@@ -38,7 +50,15 @@ export default function CreateNewAnimal() {
       toast.dismiss();
       // navigate("/animals");
       toast.success("Created");
-      reset();
+      reset({
+        name: "",
+        type: "dog",
+        breed: "",
+        birthDate: undefined,
+        price: 0,
+        description: "",
+        photo: [],
+      });
     },
     onError: () => {
       toast.dismiss();
@@ -47,140 +67,275 @@ export default function CreateNewAnimal() {
   });
 
   const onSubmit = (data: CreateNewAnimalForm) => {
-    mutation.mutate(data); // !!!!
+    const { photo, ...animalData } = data; // тимчасово
+    console.log(animalData);
+
+    mutation.mutate(animalData);
   };
 
+  const animalOptions: OptionType = [
+    { value: "dog", label: "Dog" },
+    { value: "cat", label: "Cat" },
+  ];
+
   return (
-    <>
-      <Toaster />
-      <form onSubmit={handleSubmit(onSubmit)} style={{ padding: 50 }}>
-        <div>
-          <label htmlFor="name">Name:</label>
-          <input
-            type="text"
-            id="name"
-            {...register("name", {
-              required: "Name is required",
-              minLength: {
-                value: 2,
-                message: "Name must have minimum 2 character",
-              },
-            })}
+    <main>
+      <Section>
+        <Container>
+          <Toaster />
+          <Breadcrumbs
+            className={styles.breadcrumb}
+            items={[
+              { title: "Animals", path: location.state?.from || "/animals" },
+              { title: "Animal details" },
+            ]}
           />
-          {errors.name && <p>{errors.name.message}</p>}
-        </div>
-        <div>
-          <fieldset>
-            <legend>Choose an animal </legend>
-            <label>
-              Dog
-              <input
-                type="radio"
-                value="dog"
-                {...register("animal", { required: "Select type of animal" })}
-              />
-            </label>
-            <label>
-              Cat
-              <input
-                type="radio"
-                value="cat"
-                {...register("animal", { required: "Select gender" })}
-              />
-            </label>
-          </fieldset>
-          {errors.animal && <p>{errors.animal.message}</p>}
-        </div>
+          <div className={styles.formWrapper}>
+            <h1 className={styles.title}>Add a new animal to the database</h1>
+            <form className={styles.addForm} onSubmit={handleSubmit(onSubmit)}>
+              <div>
+                <div className={styles.inputWrapper}>
+                  <label className={styles.inputLabel} htmlFor="type">
+                    Animal Type <span className={styles.star}>*</span>
+                  </label>
+                  <Controller
+                    name="type"
+                    control={control}
+                    rules={{ required: "Select type of animal" }}
+                    render={({ field }) => (
+                      <Select
+                        id="type"
+                        options={animalOptions}
+                        value={animalOptions.find(
+                          (option) => option.value === field.value,
+                        )}
+                        onChange={(option) => field.onChange(option?.value)}
+                        isSearchable={false}
+                        styles={{
+                          ...selectStyles,
+                          control: (provided) => ({
+                            ...provided,
+                            borderRadius: "10px",
+                            borderColor: "#c0c0c0",
+                            borderWidth: "1px",
+                            borderStyle: "solid",
+                            backgroundColor: "#eee",
+                            padding: "8px 10px",
+                            width: "302px",
+                            cursor: "pointer",
+                            boxShadow: "none",
+                            "&:hover": {
+                              borderColor: "#c0c0c0",
+                            },
+                          }),
+                          singleValue: (provided) => ({
+                            ...provided,
+                            color: "#4d4d4d",
+                            fontWeight: 500,
+                            fontSize: "16px",
+                            lineHeight: "1.5",
+                          }),
+                        }}
+                        components={{
+                          IndicatorSeparator: null,
+                          DropdownIndicator,
+                        }}
+                      />
+                    )}
+                  />
 
-        <div>
-          <label htmlFor="breed">Breed:</label>
-          <input
-            type="text"
-            id="breed"
-            {...register("breed", {
-              required: "Breed is required",
-              minLength: {
-                value: 2,
-                message: "Breed must have minimum 2 character",
-              },
-            })}
-          />
-        </div>
-        <div>
-          <p>Date of birth:</p>
-          <Controller
-            name="birthDate"
-            control={control}
-            render={({ field }) => (
-              <DatePicker
-                placeholderText="Select birth date"
-                selected={field.value}
-                onChange={field.onChange}
-                dateFormat="dd.MM.yyyy"
-                maxDate={new Date()}
-                showYearDropdown
-                scrollableYearDropdown
-                yearDropdownItemNumber={30}
-              />
-            )}
-          />
+                  {errors.type && (
+                    <p className={styles.errorText}>{errors.type.message}</p>
+                  )}
+                </div>
 
-          {errors.birthDate && <p>{errors.birthDate.message}</p>}
-        </div>
+                <div className={styles.inputWrapper}>
+                  <label className={styles.inputLabel} htmlFor="name">
+                    Name<span className={styles.star}>*</span>
+                  </label>
+                  <div>
+                    <input
+                      placeholder="Enter the animal's name"
+                      className={styles.input}
+                      type="text"
+                      id="name"
+                      {...register("name", {
+                        required: "Name is required",
+                        minLength: {
+                          value: 2,
+                          message: "Name must have minimum 2 character",
+                        },
+                      })}
+                    />
 
-        <div>
-          <label htmlFor="price">Price:</label>
-          <Controller
-            name="price"
-            control={control}
-            render={({ field }) => (
-              <NumericFormat
-                value={field.value}
-                onChange={field.onChange}
-                allowedDecimalSeparators={["."]}
-                thousandSeparator=","
-                prefix="$"
-                decimalScale={2}
-                allowLeadingZeros={false}
-                allowNegative={false}
-              />
-            )}
-          ></Controller>
-          {errors.price && <p>{errors.price.message}</p>}
-        </div>
+                    <p className={styles.errorText}>
+                      {errors.name && errors.name.message}
+                    </p>
+                  </div>
+                </div>
+                <div className={styles.inputWrapper}>
+                  <label className={styles.inputLabel} htmlFor="breed">
+                    Breed<span className={styles.star}>*</span>
+                  </label>
+                  <div>
+                    <input
+                      placeholder="Enter the breed"
+                      className={styles.input}
+                      type="text"
+                      id="breed"
+                      {...register("breed", {
+                        required: "Breed is required",
+                        minLength: {
+                          value: 2,
+                          message: "Breed must have minimum 2 character",
+                        },
+                      })}
+                    />
+                    <p className={styles.errorText}>
+                      {errors.breed && errors.breed.message}
+                    </p>
+                  </div>
+                </div>
 
-        <div>
-          <label htmlFor="description">Description:</label>
-          <textarea
-            style={{
-              resize: "none",
-              width: 300,
-              height: 100,
-            }}
-            id="description"
-            {...register("description", {
-              maxLength: {
-                value: 200,
-                message: "Too long description",
-              },
-            })}
-          />
-          {errors.description && <p>{errors.description.message}</p>}
-        </div>
-        <Controller
-          name="photo"
-          control={control}
-          render={({ field }) => {
-            return (
-              <DropzoneField value={field.value} onChange={field.onChange} />
-            );
-          }}
-        />
-        <button>Send</button>
-        <button type="button" onClick={() => reset()}>
-          Reset
-        </button>
-      </form>
-    </>
+                <div className={styles.inputWrapper}>
+                  <legend className={styles.inputLabel}>
+                    Sex<span className={styles.star}>*</span>{" "}
+                  </legend>
+                  <div className={styles.sexLabelWrapper}>
+                    <label className={styles.sexLabel}>
+                      Male
+                      <input
+                        defaultChecked
+                        className={styles.sexInput}
+                        type="radio"
+                        value="male"
+                        {...register("sex", { required: "Sex type of animal" })}
+                      />
+                    </label>
+                    <label className={styles.sexLabel}>
+                      Female
+                      <input
+                        className={styles.sexInput}
+                        type="radio"
+                        value="female"
+                        {...register("sex", { required: "Sex type of animal" })}
+                      />
+                    </label>
+                  </div>
+                  {errors.sex && <p>{errors.sex.message}</p>}
+                </div>
+
+                <div className={styles.inputWrapper}>
+                  <label htmlFor="birthDate" className={styles.inputLabel}>
+                    Date of birth:
+                  </label>
+                  <Controller
+                    name="birthDate"
+                    control={control}
+                    render={({ field }) => (
+                      <DatePicker
+                        className={styles.input}
+                        id="birthDate"
+                        placeholderText="Select birth date"
+                        selected={field.value}
+                        onChange={field.onChange}
+                        dateFormat="dd.MM.yyyy"
+                        maxDate={new Date()}
+                        showYearDropdown
+                        scrollableYearDropdown
+                        yearDropdownItemNumber={30}
+                      />
+                    )}
+                  />
+
+                  {errors.birthDate && <p>{errors.birthDate.message}</p>}
+                </div>
+
+                <div className={styles.inputWrapper}>
+                  <label className={styles.inputLabel} htmlFor="price">
+                    Price:
+                  </label>
+                  <Controller
+                    name="price"
+                    control={control}
+                    render={({ field }) => (
+                      <NumericFormat
+                        placeholder="0.00"
+                        className={styles.input}
+                        id="price"
+                        value={field.value}
+                        onValueChange={(values) => {
+                          field.onChange(values.floatValue);
+                        }}
+                        allowedDecimalSeparators={["."]}
+                        thousandSeparator=","
+                        prefix="$"
+                        decimalScale={2}
+                        allowLeadingZeros={false}
+                        allowNegative={false}
+                      />
+                    )}
+                  />
+                  {errors.price && <p>{errors.price.message}</p>}
+                </div>
+              </div>
+              <div>
+                <div className={styles.descWrapper}>
+                  <label className={styles.inputLabel} htmlFor="description">
+                    Description
+                  </label>
+                  <textarea
+                    placeholder="Describe the animal's personality, health condition, and any special notes..."
+                    className={styles.description}
+                    id="description"
+                    {...register("description", {
+                      maxLength: {
+                        value: 1000,
+                        message: "Too long description",
+                      },
+                    })}
+                  />
+                  {errors.description && <p>{errors.description.message}</p>}
+                </div>
+                <div className={styles.dropWrapper}>
+                  <label className={styles.inputLabel} htmlFor="photo">
+                    Images
+                  </label>
+                  <Controller
+                    name="photo"
+                    control={control}
+                    render={({ field }) => {
+                      return (
+                        <DropzoneField
+                          id="photo"
+                          value={field.value}
+                          onChange={field.onChange}
+                        />
+                      );
+                    }}
+                  />
+                </div>
+              </div>
+              <div className={styles.btnWrapper}>
+                <button
+                  type="button"
+                  className={styles.resetBtn}
+                  onClick={() => reset()}
+                >
+                  Reset
+                </button>
+                <button
+                  type="submit"
+                  disabled={mutation.isPending}
+                  className={styles.submitBtn}
+                >
+                  Send
+                </button>
+              </div>
+            </form>
+          </div>
+        </Container>
+      </Section>
+    </main>
   );
 }

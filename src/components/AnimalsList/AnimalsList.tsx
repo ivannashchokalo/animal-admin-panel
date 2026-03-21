@@ -1,5 +1,5 @@
 import type { Animal } from "../../types/animal";
-import AnimalGard from "../AnimalCard/AnimalCard";
+import AnimalCard from "../AnimalCard/AnimalCard";
 import Grid from "../Grid/Grid";
 
 interface AnimalsListProps {
@@ -10,7 +10,7 @@ export default function AnimalsList({ animals }: AnimalsListProps) {
   return (
     <Grid>
       {animals.map((animal) => (
-        <AnimalGard key={animal.id} animal={animal} />
+        <AnimalCard key={animal._id} animal={animal} />
       ))}
     </Grid>
   );

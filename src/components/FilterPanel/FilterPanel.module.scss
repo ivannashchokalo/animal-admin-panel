@@ -1,0 +1,10 @@
+@use "../../styles" as *;
+
+.panel {
+  @include flex-center(space-between);
+}
+
+.filters {
+  display: flex;
+  gap: 16px;
+}

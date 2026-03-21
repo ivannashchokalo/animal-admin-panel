@@ -1,18 +1,45 @@
-interface StatusFilterProps {
-  status: string;
-  onStatusChange: (value: string) => void;
-}
+import { useSearchParams } from "react-router";
+import Select from "react-select";
+import type { OptionType } from "../../types/select";
+import { selectStyles } from "../Select/selectStyles";
+import DropdownIndicator from "../Select/DropdownIndicator";
 
-export default function StatusFilter({
-  status,
-  onStatusChange,
-}: StatusFilterProps) {
+export default function StatusSelect() {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const status = searchParams.get("status") || "";
+
+  const handleStatusChange = (value: string) => {
+    const params = new URLSearchParams(searchParams);
+
+    if (value) {
+      params.set("status", value);
+    } else {
+      params.delete("status");
+    }
+
+    params.set("page", "1");
+    setSearchParams(params);
+  };
+
+  const options: OptionType[] = [
+    { value: "", label: "Animal status" },
+    { value: "available", label: "Available" },
+    { value: "reserved", label: "Reserved" },
+    { value: "sold", label: "Sold" },
+  ];
+
   return (
-    <select onChange={(e) => onStatusChange(e.target.value)} value={status}>
-      <option value="">All</option>
-      <option value="available">Available</option>
-      <option value="reserved">Reserved</option>
-      <option value="sold">Sold</option>
-    </select>
+    <Select
+      options={options}
+      value={options.find((option) => option.value === status)}
+      onChange={(option: OptionType) => handleStatusChange(option.value)}
+      placeholder="Status"
+      isSearchable={false}
+      styles={selectStyles}
+      components={{
+        IndicatorSeparator: null,
+        DropdownIndicator,
+      }}
+    />
   );
 }

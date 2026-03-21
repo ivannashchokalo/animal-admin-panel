@@ -1,0 +1,48 @@
+@use "../../styles" as *;
+
+.searchForm {
+  @include flex-center(null);
+}
+
+.formLabel {
+  position: relative;
+  margin-right: 8px;
+  width: 302px;
+  height: 40px;
+}
+
+.formInput {
+  @include fonts($fw: 500);
+  width: 100%;
+  border: 1px solid #c0c0c0;
+  border-radius: 8px;
+  padding: 8px 10px 8px 38px;
+  outline: none;
+}
+
+.placeholderIcon {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  fill: #c0c0c0;
+  pointer-events: none;
+}
+
+.searchCrossBtn {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  background-color: transparent;
+  border: none;
+  line-height: 0;
+}
+
+.searchCrossIcon {
+  fill: #4d4d4d;
+}
+
+.formSubmitBtn {
+  @include button(#a2a2a2, #757575, #4d4d4d);
+}

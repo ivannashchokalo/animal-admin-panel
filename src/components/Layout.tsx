@@ -3,9 +3,14 @@ import Header from "./Header/Header";
 
 export default function Layout() {
   return (
+    // <div className="container">
     <>
       <Header />
-      <Outlet />
+      <main>
+        <Outlet />
+      </main>
     </>
+
+    // </div>
   );
 }

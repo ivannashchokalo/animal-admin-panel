@@ -1,0 +1,69 @@
+@use "../../styles" as *;
+
+header {
+  padding: 24px 0 8px;
+  border-bottom: solid 1px #c0c0c0;
+}
+
+.headerContainer {
+  @include flex-center(null);
+}
+
+.nav {
+  @include flex-center(space-between);
+  flex-grow: 1;
+}
+
+.logoIcon {
+  fill: #000;
+}
+
+.navList {
+  @include flex-center(null);
+  gap: 32px;
+}
+
+.navListLink {
+  @include flex-center(null);
+  @include fonts($color: #a2a2a2);
+  padding: 10px 15px;
+  gap: 8px;
+  transition: all 0.2s ease;
+
+  &:hover,
+  &:focus-visible {
+    border-radius: 8px;
+    background-color: #eee;
+    color: #131313;
+  }
+}
+
+.activeLink {
+  border-radius: 8px;
+  background-color: #eee;
+  color: #131313;
+}
+
+.navListIcon {
+  fill: currentColor;
+}
+
+.authList {
+  @include flex-center(null);
+  gap: 16px;
+  margin-left: 125px;
+}
+
+.signIn {
+  @include button(
+    transparent,
+    rgba(192, 192, 192, 0.1),
+    rgba(192, 192, 192, 0.4),
+    #222,
+    0.5px solid #222
+  );
+}
+
+.logout {
+  @include button;
+}

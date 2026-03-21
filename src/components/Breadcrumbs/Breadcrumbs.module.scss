@@ -1,0 +1,27 @@
+@use "../../styles/" as *;
+
+.breadcrumb {
+  @include flex-center(null);
+  gap: 8px;
+}
+
+.breadcrumbIcon {
+  fill: #222;
+}
+
+.element {
+  @include flex-center(null);
+  @include fonts($fs: 14px, $color: #a2a2a2);
+  gap: 8px;
+  text-align: center;
+}
+
+.lastElement {
+  @include fonts(12px);
+  text-align: center;
+}
+
+.firstLink {
+  @include flex-center(null);
+  gap: 8px;
+}

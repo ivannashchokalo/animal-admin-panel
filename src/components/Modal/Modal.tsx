@@ -1,6 +1,6 @@
 import type React from "react";
 import { useEffect, type ReactNode } from "react";
-import css from "./Modal.module.css";
+import styles from "./Modal.module.scss";
 import { createPortal } from "react-dom";
 
 interface BackdropProps {
@@ -21,9 +21,10 @@ export default function Modal({ children, onModalClose }: BackdropProps) {
 
     return () => document.removeEventListener("keydown", handleEscapePress);
   }, [onModalClose]);
+
   return createPortal(
-    <div className={css.backdrop} onClick={handleModalClose}>
-      <div className={css.modal}>{children}</div>
+    <div className={styles.backdrop} onClick={handleModalClose}>
+      <div className={styles.modal}>{children}</div>
     </div>,
     document.body,
   );

@@ -1,0 +1,156 @@
+@use "../../styles" as *;
+
+.btnsWrapper {
+  @include flex-center(null);
+  margin-bottom: 48px;
+}
+
+.changeBtnWrapper {
+  @include flex-center;
+  margin-left: auto;
+  gap: 16px;
+}
+
+.editBtn {
+  @include button;
+  gap: 4px;
+}
+
+.editIcon {
+  fill: #fff;
+}
+
+.deleteBtn {
+  @include fonts(16px, 600, #e24a4a);
+  padding: 8px 5px;
+  border: none;
+  background-color: transparent;
+  align-self: start;
+  transition: all 0.2s ease;
+
+  &:hover,
+  &:focus-visible {
+    color: #d93131;
+  }
+
+  &:active {
+    color: #d60000;
+  }
+}
+
+.detailesWrapper {
+  @include border;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 54px;
+}
+
+.rightColumn {
+  @include flex-column;
+  height: 100%;
+}
+
+.animalImg {
+  margin: 0 auto;
+}
+
+.contentWrapper {
+  @include flex-column(16px);
+  margin-bottom: 32px;
+}
+
+.desTitle {
+  @include fonts(20px, 600, #353535);
+}
+
+.titlePos {
+  margin-right: 8px;
+}
+
+.desText {
+  @include fonts(18px);
+}
+
+.desBorder {
+  margin-bottom: 16px;
+  padding: 15px;
+  border: 0.5px solid #d9d9d9;
+  border-radius: 8px;
+}
+
+.flexWrapper {
+  @include flex-center(null);
+}
+
+.smoleGapWrapper {
+  gap: 8px;
+}
+
+.bigGapWrapper {
+  justify-content: space-between;
+}
+
+.badge {
+  @include flex-center;
+  @include fonts($fs: 14px, $fw: 500, $color: #fff, $ls: 0.01em);
+  border-radius: 8px;
+  width: 110px;
+  height: 27px;
+}
+
+.available {
+  background-color: #28a745;
+}
+
+.reserved {
+  background-color: #ffc107;
+}
+
+.sold {
+  background-color: #6c757d;
+}
+
+.desPrice {
+  @include fonts(20px, 700, #080808);
+}
+
+.desColor {
+  color: #000;
+}
+
+.desPos {
+  margin-bottom: 8px;
+  margin-top: auto;
+}
+
+//========== delete modal
+
+.modalIcon {
+  margin-bottom: 16px;
+  fill: #d60000;
+}
+
+.modalTitle {
+  @include fonts(24px, 600, #000, 1);
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+.modalText {
+  @include fonts(14px, 500, #757575);
+  margin-bottom: 32px;
+  text-align: center;
+}
+
+.modalBtnsWrapper {
+  @include flex-center(space-evenly);
+  width: 100%;
+}
+
+.modalBtnCancel {
+  @include button(#d9d9d9, #c0c0c0, #a2a2a2, #353535);
+}
+
+.modalBtnDelete {
+  @include button(#d60000, #b31a1a, #7d1313);
+}

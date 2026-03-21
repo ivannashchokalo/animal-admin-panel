@@ -1,30 +1,16 @@
 import SearchBox from "../SearchBox/SearchBox";
 import StatusFilter from "../StatusFilter/StatusFilter";
 import TypeFilter from "../TypeFilter/TypeFilter";
+import styles from "./FilterPanel.module.scss";
 
-interface FilterPanelProps {
-  search: string;
-  // onSearch: (value: string) => void;
-  type: string;
-  onTypeChange: (value: string) => void;
-  status: string;
-  onStatusChange: (value: string) => void;
-  onPageChange: (value: number) => void;
-}
-
-export default function FilterPanel({
-  onSearch,
-  type,
-  onTypeChange,
-  status,
-  onStatusChange,
-  onPageChange,
-}: FilterPanelProps) {
+export default function FilterPanel() {
   return (
-    <div>
-      <SearchBox onSearch={onSearch} onPageChange={onPageChange} />
-      <TypeFilter type={type} onTypeChange={onTypeChange} />
-      <StatusFilter status={status} onStatusChange={onStatusChange} />
+    <div className={styles.panel}>
+      <SearchBox />
+      <div className={styles.filters}>
+        <TypeFilter />
+        <StatusFilter />
+      </div>
     </div>
   );
 }
