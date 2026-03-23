@@ -26,7 +26,15 @@ export const authApi = createApi({
         method: "POST",
       }),
     }),
+
+    checkAuth: builder.query<{ isAuthenticated: boolean }, void>({
+      query: () => ({
+        url: "/auth/is-authenticated",
+        method: "GET",
+      }),
+    }),
   }),
 });
 
-export const { useLoginMutation, useLogoutMutation } = authApi;
+export const { useLoginMutation, useLogoutMutation, useCheckAuthQuery } =
+  authApi;

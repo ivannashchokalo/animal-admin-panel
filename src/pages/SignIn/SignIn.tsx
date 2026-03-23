@@ -27,8 +27,6 @@ export default function SignIn() {
         password: password,
       }).unwrap(); //перетворює результат RTK Query у нормальний Promise
 
-      console.log(result);
-
       navigate("/");
     } catch (err) {
       console.error(err);
@@ -37,7 +35,7 @@ export default function SignIn() {
   };
 
   return (
-    <main>
+    <>
       <Toaster />
       <Section>
         <Container>
@@ -64,6 +62,6 @@ export default function SignIn() {
           </form>
         </Container>
       </Section>
-    </main>
+    </>
   );
 }
