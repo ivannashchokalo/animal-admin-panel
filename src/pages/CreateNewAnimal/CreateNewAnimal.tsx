@@ -3,8 +3,6 @@ import DropzoneField from "../../components/DropzoneField/DropzoneField";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { NumericFormat } from "react-number-format";
-import { useMutation } from "@tanstack/react-query";
-import { addAnimal } from "../../services/animalsService";
 import toast, { Toaster } from "react-hot-toast";
 import Section from "../../components/Section/Section";
 import Container from "../../components/Container/Container";
@@ -15,6 +13,7 @@ import { selectStyles } from "../../components/Select/selectStyles";
 import DropdownIndicator from "../../components/Select/DropdownIndicator";
 import type { OptionType } from "../../types/select";
 import Breadcrumbs from "../../components/Breadcrumbs/Breadcrumbs";
+import { useAddAnimalMutation } from "../../services/animalsApi";
 
 interface CreateNewAnimalForm {
   name: string;
@@ -43,12 +42,16 @@ export default function CreateNewAnimal() {
     mode: "onBlur",
   });
 
-  const mutation = useMutation({
-    mutationFn: addAnimal,
-    onMutate: () => toast.loading("Creating..."),
-    onSuccess: () => {
+  const [addAnimal, { isLoading }] = useAddAnimalMutation();
+
+  const onSubmit = async (data: CreateNewAnimalForm) => {
+    const { photo, ...animalData } = data;
+
+    try {
+      toast.loading("Creating...");
+      await addAnimal(animalData).unwrap();
+
       toast.dismiss();
-      // navigate("/animals");
       toast.success("Created");
       reset({
         name: "",
@@ -59,18 +62,10 @@ export default function CreateNewAnimal() {
         description: "",
         photo: [],
       });
-    },
-    onError: () => {
+    } catch {
       toast.dismiss();
       toast.error("Error");
-    },
-  });
-
-  const onSubmit = (data: CreateNewAnimalForm) => {
-    const { photo, ...animalData } = data; // тимчасово
-    console.log(animalData);
-
-    mutation.mutate(animalData);
+    }
   };
 
   const animalOptions: OptionType = [
@@ -326,7 +321,7 @@ export default function CreateNewAnimal() {
                 </button>
                 <button
                   type="submit"
-                  disabled={mutation.isPending}
+                  disabled={isLoading}
                   className={styles.submitBtn}
                 >
                   Send

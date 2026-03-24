@@ -4,7 +4,7 @@ import type { AuthData } from "../../types/user";
 import { useForm } from "react-hook-form";
 import Section from "../../components/Section/Section";
 import Container from "../../components/Container/Container";
-import { useLoginMutation } from "../../services/auth";
+import { useLoginMutation } from "../../services/authApi";
 
 export default function SignIn() {
   const navigate = useNavigate();

@@ -3,13 +3,15 @@ import DropzoneField from "../../components/DropzoneField/DropzoneField";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { NumericFormat } from "react-number-format";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { fetchAnimalById, updateAnimal } from "../../services/animalsService";
 import toast, { Toaster } from "react-hot-toast";
 import { useLocation, useNavigate, useParams } from "react-router";
 import Section from "../../components/Section/Section";
 import Container from "../../components/Container/Container";
 import Breadcrumbs from "../../components/Breadcrumbs/Breadcrumbs";
+import {
+  useGetAnimalByIdQuery,
+  useUpdateAnimalMutation,
+} from "../../services/animalsApi";
 
 interface UpdateAnimalForm {
   name: string;
@@ -26,12 +28,8 @@ export default function EditAnimal() {
   const { id } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
-  console.log(location);
-
-  const { data } = useQuery({
-    queryKey: ["animal", id],
-    queryFn: () => fetchAnimalById(id as string),
-  });
+  const { data, isLoading } = useGetAnimalByIdQuery(id);
+  const [updateAnimal, { isLoading: isUpdating }] = useUpdateAnimalMutation();
 
   const {
     register,
@@ -51,28 +49,27 @@ export default function EditAnimal() {
     },
     mode: "onBlur",
   });
+  const onSubmit = async (formData: UpdateAnimalForm) => {
+    const { photo, ...upData } = formData;
 
-  const mutation = useMutation({
-    mutationFn: updateAnimal,
-    onMutate: () => toast.loading("Updating..."),
-    onSuccess: () => {
+    if (!id) return;
+
+    try {
+      toast.loading("Updating...");
+
+      await updateAnimal({
+        id,
+        ...upData,
+      }).unwrap();
+
       toast.dismiss();
       toast.success("Updated");
-      // reset();
+
       navigate(`/animals/${id}`);
-    },
-    onError: () => {
+    } catch {
       toast.dismiss();
       toast.error("Error");
-    },
-  });
-
-  const onSubmit = (data: UpdateAnimalForm) => {
-    const { photo, ...upData } = data; // тимчасово
-    mutation.mutate({
-      id: id,
-      ...upData,
-    });
+    }
   };
 
   return (
@@ -97,7 +94,6 @@ export default function EditAnimal() {
                 type="text"
                 id="name"
                 {...register("name", {
-                  required: "Name is required",
                   minLength: {
                     value: 2,
                     message: "Name must have minimum 2 character",
@@ -111,19 +107,11 @@ export default function EditAnimal() {
                 <legend>Choose an animal </legend>
                 <label>
                   Dog
-                  <input
-                    type="radio"
-                    value="dog"
-                    {...register("type", { required: "Select type of animal" })}
-                  />
+                  <input type="radio" value="dog" {...register("type")} />
                 </label>
                 <label>
                   Cat
-                  <input
-                    type="radio"
-                    value="cat"
-                    {...register("type", { required: "Select gender" })}
-                  />
+                  <input type="radio" value="cat" {...register("type")} />
                 </label>
               </fieldset>
               {errors.type && <p>{errors.type.message}</p>}
@@ -133,19 +121,11 @@ export default function EditAnimal() {
                 <legend>Choose a sex </legend>
                 <label>
                   Male
-                  <input
-                    type="radio"
-                    value="male"
-                    {...register("sex", { required: "Sex type of animal" })}
-                  />
+                  <input type="radio" value="male" {...register("sex")} />
                 </label>
                 <label>
                   Female
-                  <input
-                    type="radio"
-                    value="female"
-                    {...register("sex", { required: "Sex type of animal" })}
-                  />
+                  <input type="radio" value="female" {...register("sex")} />
                 </label>
               </fieldset>
               {errors.sex && <p>{errors.sex.message}</p>}
@@ -157,7 +137,6 @@ export default function EditAnimal() {
                 type="text"
                 id="breed"
                 {...register("breed", {
-                  required: "Breed is required",
                   minLength: {
                     value: 2,
                     message: "Breed must have minimum 2 character",
@@ -240,7 +219,7 @@ export default function EditAnimal() {
                 );
               }}
             />
-            <button disabled={mutation.isPending}>Send</button>
+            <button disabled={isUpdating}>Send</button>
             <button
               type="button"
               onClick={() =>

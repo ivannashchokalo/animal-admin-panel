@@ -1,10 +1,14 @@
+// імпортуємо configureStore
 import { configureStore } from "@reduxjs/toolkit";
-import { authApi } from "../services/auth";
+
+// імпортуємо baseApi (а НЕ authApi)
+import { baseApi } from "../services/api";
 
 export const store = configureStore({
   reducer: {
-    [authApi.reducerPath]: authApi.reducer,
+    [baseApi.reducerPath]: baseApi.reducer,
   },
+
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(authApi.middleware),
+    getDefaultMiddleware().concat(baseApi.middleware),
 });

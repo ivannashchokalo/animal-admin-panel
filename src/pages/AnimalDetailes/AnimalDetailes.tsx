@@ -1,10 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocation, useNavigate, useParams } from "react-router";
-import {
-  deleteAnimal,
-  fetchAnimalById,
-  updateAnimal,
-} from "../../services/animalsService";
 import clsx from "clsx";
 import styles from "./AnimalDetailes.module.scss";
 import toast, { Toaster } from "react-hot-toast";
@@ -18,55 +12,63 @@ import type { OptionType } from "../../types/select";
 import { selectStyles } from "../../components/Select/selectStyles";
 import DropdownIndicator from "../../components/Select/DropdownIndicator";
 import Breadcrumbs from "../../components/Breadcrumbs/Breadcrumbs";
+import {
+  useDeleteAnimalMutation,
+  useGetAnimalByIdQuery,
+  useUpdateAnimalMutation,
+} from "../../services/animalsApi";
 
 export default function AnimalDetailes() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const location = useLocation();
-  const queryClient = useQueryClient();
-  console.log(location);
+  // const queryClient = useQueryClient();
 
-  const { data, isError, isLoading } = useQuery({
-    queryKey: ["animal", id],
-    queryFn: () => fetchAnimalById(id as string),
-  });
+  const { data, isLoading, isError } = useGetAnimalByIdQuery(id);
+  const [deleteAnimal] = useDeleteAnimalMutation();
+  const [updateAnimal] = useUpdateAnimalMutation();
 
-  const { mutate: mutateDelete } = useMutation({
-    mutationFn: deleteAnimal,
-    onMutate: () => {
+  const handleDelete = async () => {
+    try {
       toast.loading("Deleting...");
-    },
-    onSuccess: () => {
-      navigate("/animals");
+
+      await deleteAnimal(id).unwrap();
+
       toast.dismiss();
       toast.success("Deleted");
-    },
-    onError: () => toast.error("Error"),
-  });
+
+      navigate("/animals");
+    } catch {
+      toast.dismiss();
+      toast.error("Error");
+    }
+  };
+
+  const handleUpdateStatus = async (status: string) => {
+    if (!id) return;
+
+    try {
+      toast.loading("Updating...");
+
+      await updateAnimal({
+        id,
+        status,
+      }).unwrap();
+
+      toast.dismiss();
+      toast.success("Updated");
+    } catch (error) {
+      toast.dismiss();
+      toast.error("Error");
+    }
+  };
 
   const options: OptionType[] = [
     { value: "available", label: "Available" },
     { value: "reserved", label: "Reserved" },
     { value: "sold", label: "Sold" },
   ];
-
-  const mutation = useMutation({
-    mutationFn: updateAnimal,
-    onMutate: () => toast.loading("Updating..."),
-    onSuccess: () => {
-      toast.dismiss();
-      toast.success("Updated");
-
-      queryClient.invalidateQueries({
-        queryKey: ["animal", id],
-      });
-    },
-    onError: () => {
-      toast.dismiss();
-      toast.error("Error");
-    },
-  });
 
   return (
     <Section>
@@ -84,7 +86,7 @@ export default function AnimalDetailes() {
               options={options}
               value={options.find((option) => option.value === data?.status)}
               onChange={(option: OptionType) => {
-                mutation.mutate({ id: id, status: option.value });
+                handleUpdateStatus(option.value);
               }}
               isSearchable={false}
               styles={selectStyles}
@@ -107,10 +109,9 @@ export default function AnimalDetailes() {
             </button>
           </div>
         </div>
-
+        <Toaster />
         {isLoading && <p>Loading...</p>}
         {isError && <p>Error!</p>}
-        <Toaster />
         {data && (
           <div className={styles.detailesWrapper}>
             <div>
@@ -214,7 +215,7 @@ export default function AnimalDetailes() {
               </button>
               <button
                 className={clsx(styles.modalBtn, styles.modalBtnDelete)}
-                onClick={() => mutateDelete(id)}
+                onClick={handleDelete}
               >
                 Delete
               </button>
@@ -225,11 +226,3 @@ export default function AnimalDetailes() {
     </Section>
   );
 }
-
-// breadcrumbsConfig={[
-//             { title: , path: '../..' },
-//             {
-//               title: ,
-//               path: ,
-//             },
-//           ]}

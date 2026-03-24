@@ -3,7 +3,7 @@ import styles from "./Header.module.scss";
 import Icon from "../Icon/Icon";
 import Container from "../Container/Container";
 import toast from "react-hot-toast";
-import { authApi, useLogoutMutation } from "../../services/auth";
+import { authApi, useLogoutMutation } from "../../services/authApi";
 import { useDispatch } from "react-redux";
 
 export default function Header() {
