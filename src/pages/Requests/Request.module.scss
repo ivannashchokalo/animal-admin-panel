@@ -56,3 +56,35 @@
   opacity: 0.5;
   cursor: not-allowed;
 }
+
+//========== delete modal
+
+.modalIcon {
+  margin-bottom: 16px;
+  fill: #d60000;
+}
+
+.modalTitle {
+  @include fonts(24px, 600, #000, 1);
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+.modalText {
+  @include fonts(14px, 500, #757575);
+  margin-bottom: 32px;
+  text-align: center;
+}
+
+.modalBtnsWrapper {
+  @include flex-center(space-evenly);
+  width: 100%;
+}
+
+.modalBtnCancel {
+  @include button(#d9d9d9, #c0c0c0, #a2a2a2, #353535);
+}
+
+.modalBtnDelete {
+  @include button(#d60000, #b31a1a, #7d1313);
+}

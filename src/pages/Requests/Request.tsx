@@ -20,6 +20,8 @@ import {
   useGetRequestsQuery,
   useUpdateRequestMutation,
 } from "../../services/requestsApi";
+import Icon from "../../components/Icon/Icon";
+import clsx from "clsx";
 
 export default function Requests() {
   const modules = [AllCommunityModule];
@@ -28,6 +30,7 @@ export default function Requests() {
   const { data, isLoading, isError } = useGetRequestsQuery();
   const [updateRequest] = useUpdateRequestMutation();
   const [deleteRequest] = useDeleteRequestMutation();
+  const [deletedId, setDeletedId] = useState<string | null>(null);
 
   const colDefs = [
     {
@@ -86,7 +89,7 @@ export default function Requests() {
           <button
             type="button"
             className={styles.deleteBtn}
-            onClick={() => handleDelete(params.data._id)}
+            onClick={() => setDeletedId(params.data._id)}
           >
             Delete
           </button>
@@ -122,9 +125,10 @@ export default function Requests() {
     }
   };
 
-  const handleDelete = async (id) => {
+  const handleDelete = async (id: string) => {
     try {
       await deleteRequest(id).unwrap();
+      setDeletedId(null);
       toast.success("Deleted successfully");
     } catch {
       toast.error("Delete failed");
@@ -227,7 +231,6 @@ export default function Requests() {
     <>
       <Section>
         <Container>
-          {/* <div style={{ display: "flex" }}> */}
           {isLoading && <p>Loading...</p>}
           {isError && <p>Error!</p>}
           <Toaster />
@@ -251,7 +254,7 @@ export default function Requests() {
                   <button onClick={handleBulkClosed}>Mark as Closed</button>
                 </li>
               </ul>
-              <div className="ag-theme-alpine" style={{ height: 600 }}>
+              <div className="ag-theme-alpine" style={{ height: 700 }}>
                 <AgGridReact
                   rowData={data}
                   columnDefs={colDefs}
@@ -263,7 +266,6 @@ export default function Requests() {
               </div>
             </AgGridProvider>
           )}
-          {/* </div> */}
         </Container>
       </Section>
       {selectedMessage && (
@@ -277,6 +279,29 @@ export default function Requests() {
           >
             Close
           </button>
+        </Modal>
+      )}
+      {deletedId && (
+        <Modal onModalClose={() => setDeletedId(null)}>
+          <Icon name="warning" size={40} className={styles.modalIcon} />
+          <h2 className={styles.modalTitle}>Delete row</h2>
+          <p className={styles.modalText}>
+            Are you sure you want to delete this row?
+          </p>
+          <div className={styles.modalBtnsWrapper}>
+            <button
+              className={clsx(styles.modalBtn, styles.modalBtnCancel)}
+              onClick={() => setDeletedId(null)}
+            >
+              Cancel
+            </button>
+            <button
+              className={clsx(styles.modalBtn, styles.modalBtnDelete)}
+              onClick={() => handleDelete(deletedId)}
+            >
+              Delete
+            </button>
+          </div>
         </Modal>
       )}
     </>

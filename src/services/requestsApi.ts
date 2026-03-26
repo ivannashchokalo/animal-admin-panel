@@ -2,7 +2,7 @@ import { baseApi } from "./api";
 
 export const requestsApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    getRequests: builder.query({
+    getRequests: builder.query<Request[], void>({
       query: () => "/requests",
       providesTags: ["Requests"],
     }),
