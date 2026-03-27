@@ -1,5 +1,10 @@
 // імпортуємо createApi (створює API slice)
 // і fetchBaseQuery (вбудований fetch для HTTP запитів)
+import type {
+  BaseQueryFn,
+  FetchArgs,
+  FetchBaseQueryError,
+} from "@reduxjs/toolkit/query";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 // базовий запит (аналог axios instance)
@@ -9,7 +14,11 @@ const baseQuery = fetchBaseQuery({
 });
 
 //обгортка над baseQuery (аналог interceptor в axios)
-const baseQueryWithReauth = async (args, api, extraOptions) => {
+const baseQueryWithReauth: BaseQueryFn<
+  string | FetchArgs,
+  unknown,
+  FetchBaseQueryError
+> = async (args, api, extraOptions) => {
   // args - мої параметри запиту
   //   apі - доступ до Redux api.dispatch, api.getState
   //   extraOptions - майже не використовується
