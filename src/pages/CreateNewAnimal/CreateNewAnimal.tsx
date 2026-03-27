@@ -68,7 +68,7 @@ export default function CreateNewAnimal() {
     }
   };
 
-  const animalOptions: OptionType = [
+  const animalOptions: OptionType[] = [
     { value: "dog", label: "Dog" },
     { value: "cat", label: "Cat" },
   ];
@@ -98,7 +98,7 @@ export default function CreateNewAnimal() {
                     control={control}
                     rules={{ required: "Select type of animal" }}
                     render={({ field }) => (
-                      <Select
+                      <Select<OptionType, false>
                         id="type"
                         options={animalOptions}
                         value={animalOptions.find(

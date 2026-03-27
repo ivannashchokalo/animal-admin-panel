@@ -16,7 +16,7 @@ export const authApi = baseApi.injectEndpoints({
       invalidatesTags: ["Auth"],
     }),
 
-    logout: builder.mutation({
+    logout: builder.mutation<void, void>({
       query: () => ({
         url: "/auth/logout",
         method: "POST",
@@ -25,7 +25,7 @@ export const authApi = baseApi.injectEndpoints({
       invalidatesTags: ["Auth"],
     }),
 
-    checkAuth: builder.query({
+    checkAuth: builder.query<{ isAuthenticated: boolean }, void>({
       // query = отримання даних (GET)
       query: () => "/auth/is-authenticated",
 

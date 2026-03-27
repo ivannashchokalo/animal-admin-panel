@@ -4,9 +4,14 @@ import styles from "./DropzoneField.module.scss";
 interface DropzoneFieldProps {
   value: File[];
   onChange: (files: File[]) => void;
+  id?: string;
 }
 
-export default function DropzoneField({ value, onChange }: DropzoneFieldProps) {
+export default function DropzoneField({
+  value,
+  onChange,
+  id,
+}: DropzoneFieldProps) {
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     multiple: true,
     accept: { "image/*": [] },
@@ -17,7 +22,7 @@ export default function DropzoneField({ value, onChange }: DropzoneFieldProps) {
 
   return (
     <div {...getRootProps()} className={styles.dropZone}>
-      <input {...getInputProps()} />
+      <input {...getInputProps({ id })} />
 
       <div className={styles.content}>
         <img
