@@ -101,21 +101,9 @@ export default function Header() {
               </li>
             </ul>
           </nav>
-          <ul className={styles.authList}>
-            <li className={styles.authListItem}>
-              <button
-                onClick={() => navigate("sign-in")}
-                className={styles.signIn}
-              >
-                Sign In
-              </button>
-            </li>
-            <li className={styles.authListItem}>
-              <button className={styles.logout} onClick={handleLogout}>
-                Logout
-              </button>
-            </li>
-          </ul>
+          <button className={styles.logout} onClick={handleLogout}>
+            Logout
+          </button>
         </div>
       </Container>
     </header>
