@@ -1,5 +1,3 @@
-import { useQuery } from "@tanstack/react-query";
-import { fetchAnimals } from "../../services/animalsService";
 import AnimalsList from "../../components/AnimalsList/AnimalsList";
 import FilterPanel from "../../components/FilterPanel/FilterPanel";
 import ReactPaginate from "react-paginate";
@@ -9,6 +7,7 @@ import styles from "./Animals.module.scss";
 import Icon from "../../components/Icon/Icon";
 import Container from "../../components/Container/Container";
 import Section from "../../components/Section/Section";
+import { useGetAnimalsQuery } from "../../services/animalsApi";
 
 export default function Animals() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -17,24 +16,29 @@ export default function Animals() {
   const status = searchParams.get("status") || "";
   const page = Number(searchParams.get("page")) || 1;
   const location = useLocation();
-
+  const { data, isLoading, isError } = useGetAnimalsQuery({
+    page,
+    search,
+    type,
+    status,
+  });
   const handlePageChange = ({ selected }: { selected: number }) => {
     const params = new URLSearchParams(searchParams);
     params.set("page", String(selected + 1));
     setSearchParams(params);
   };
 
-  const { data, isError, isLoading } = useQuery({
-    queryKey: ["animals", page, type, status, search],
-    queryFn: () => fetchAnimals(page, search, type, status),
-  });
+  // const { data, isError, isLoading } = useQuery({
+  //   queryKey: ["animals", page, type, status, search],
+  //   queryFn: () => fetchAnimals(page, search, type, status),
+  // });
 
   return (
     <Section>
       <Container>
         <div className={styles.wrapper}>
           <h1 className={styles.title}>
-            Animals{" "}
+            Animals
             <span className={styles.subTitle}>
               Manage the list of all animals in the system.
             </span>

@@ -1,5 +1,5 @@
 import { useSearchParams } from "react-router";
-import Select from "react-select";
+import Select, { type SingleValue } from "react-select";
 import type { OptionType } from "../../types/select";
 import { selectStyles } from "../Select/selectStyles";
 import DropdownIndicator from "../Select/DropdownIndicator";
@@ -29,10 +29,10 @@ export default function StatusSelect() {
   ];
 
   return (
-    <Select
+    <Select<OptionType, false>
       options={options}
       value={options.find((option) => option.value === status)}
-      onChange={(option: OptionType) => handleStatusChange(option.value)}
+      onChange={(option) => handleStatusChange(option?.value || "")}
       placeholder="Status"
       isSearchable={false}
       styles={selectStyles}

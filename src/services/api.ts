@@ -1,30 +1,93 @@
-import axios from "axios";
+// імпортуємо createApi (створює API slice)
+// і fetchBaseQuery (вбудований fetch для HTTP запитів)
+import type {
+  BaseQueryFn,
+  FetchArgs,
+  FetchBaseQueryError,
+} from "@reduxjs/toolkit/query";
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-export const api = axios.create({
-  baseURL: "http://localhost:3000",
-  withCredentials: true,
+// базовий запит (аналог axios instance)
+const baseQuery = fetchBaseQuery({
+  baseUrl: "http://localhost:3000",
+  credentials: "include",
 });
 
-//api.interceptors.response.use(successFn, errorFn)
+//обгортка над baseQuery (аналог interceptor в axios)
+const baseQueryWithReauth: BaseQueryFn<
+  string | FetchArgs,
+  unknown,
+  FetchBaseQueryError
+> = async (args, api, extraOptions) => {
+  // args - мої параметри запиту
+  //   apі - доступ до Redux api.dispatch, api.getState
+  //   extraOptions - майже не використовується
 
-api.interceptors.response.use(
-  (response) => response, // якщо все добре, повертаємо відповідь
+  // робимо звичайний запит
+  let result = await baseQuery(args, api, extraOptions);
 
-  async (error) => {
-    const originalRequest = error.config; // оригінальний запит, який впав
+  // якщо сервер повернув 401 (не авторизований)
+  if (result.error?.status === 401) {
+    // пробуємо оновити токен (refresh)
+    await baseQuery(
+      {
+        url: "/auth/refresh",
+        method: "POST",
+      },
+      api,
+      extraOptions,
+    );
 
-    if (error.response?.status === 401) {
-      try {
-        await api.post("/auth/refresh");
+    // після refresh пробуємо ще раз той самий запит
+    result = await baseQuery(args, api, extraOptions);
+  }
 
-        console.log("refreshed ");
+  // повертаємо результат (або успіх, або помилку)
+  return result;
+};
 
-        return api(originalRequest);
-      } catch (error) {
-        window.location.href = "/sign-in";
-        return Promise.reject(error);
-      }
-    }
-    return Promise.reject(error);
-  },
-);
+// створюємо головний API slice
+export const baseApi = createApi({
+  // ключ у Redux store (state.api)
+  reducerPath: "api",
+
+  // використовуємо нашу кастомну логіку з refresh
+  baseQuery: baseQueryWithReauth,
+
+  // список тегів для кешування
+  tagTypes: ["Auth", "Animals", "Requests"],
+
+  // тут поки пусто — endpoints будемо додавати через injectEndpoints
+  endpoints: () => ({}),
+});
+
+// import axios from "axios";
+
+// export const api = axios.create({
+//   baseURL: "http://localhost:3000",
+//   withCredentials: true,
+// });
+
+// //api.interceptors.response.use(successFn, errorFn)
+
+// api.interceptors.response.use(
+//   (response) => response, // якщо все добре, повертаємо відповідь
+
+//   async (error) => {
+//     const originalRequest = error.config; // оригінальний запит, який впав
+
+//     if (error.response?.status === 401) {
+//       try {
+//         await api.post("/auth/refresh");
+
+//         console.log("refreshed ");
+
+//         return api(originalRequest);
+//       } catch (error) {
+//         window.location.href = "/sign-in";
+//         return Promise.reject(error);
+//       }
+//     }
+//     return Promise.reject(error);
+//   },
+// );

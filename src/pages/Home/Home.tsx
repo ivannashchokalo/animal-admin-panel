@@ -1,4 +1,4 @@
-import { useCheckAuthQuery } from "../../services/auth";
+import { useCheckAuthQuery } from "../../services/authApi";
 
 export default function Home() {
   const { data } = useCheckAuthQuery();

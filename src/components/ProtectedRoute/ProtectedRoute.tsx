@@ -1,5 +1,5 @@
 import { Navigate, Outlet } from "react-router";
-import { useCheckAuthQuery } from "../../services/auth";
+import { useCheckAuthQuery } from "../../services/authApi";
 
 export default function ProtectedRoute() {
   const { data, isLoading, isFetching } = useCheckAuthQuery();
@@ -9,7 +9,7 @@ export default function ProtectedRoute() {
   }
 
   if (!data?.isAuthenticated) {
-    return <Navigate to="/unauthorized" replace />;
+    return <Navigate to="/sign-in" replace />;
   }
 
   return <Outlet />;

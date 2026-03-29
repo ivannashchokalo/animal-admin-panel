@@ -6,7 +6,7 @@ import AnimalDetailes from "../../pages/AnimalDetailes/AnimalDetailes";
 import Request from "../../pages/Requests/Request";
 import Settings from "../../pages/Settings/Settings";
 import CreateNewAnimal from "../../pages/CreateNewAnimal/CreateNewAnimal";
-import EditAnimal from "../../pages/EditAnimal.tsx/EditAnimal";
+import EditAnimal from "../../pages/EditAnimal/EditAnimal";
 import SignIn from "../../pages/SignIn/SignIn";
 import ProtectedRoute from "../ProtectedRoute/ProtectedRoute";
 import Unauthorized from "../../pages/Unauthorized/Unauthorized";
