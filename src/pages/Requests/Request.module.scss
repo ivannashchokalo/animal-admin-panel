@@ -88,3 +88,28 @@
 .modalBtnDelete {
   @include button(#d60000, #b31a1a, #7d1313);
 }
+
+.ag-theme-alpine {
+  @include border;
+  --ag-font-family: #{$font-family};
+  --ag-row-height: 60px;
+  padding: 0;
+
+  .ag-header {
+    @include fonts($fw: 600);
+    background-color: #f5f5f5;
+  }
+
+  .ag-column-first {
+    @include flex-center;
+  }
+
+  .ag-header-cell-label {
+    justify-content: center;
+  }
+
+  .ag-cell {
+    @include flex-center;
+    @include fonts(14px);
+  }
+}

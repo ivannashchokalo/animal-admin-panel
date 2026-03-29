@@ -38,7 +38,7 @@ export default function Animals() {
       <Container>
         <div className={styles.wrapper}>
           <h1 className={styles.title}>
-            Animals{" "}
+            Animals
             <span className={styles.subTitle}>
               Manage the list of all animals in the system.
             </span>

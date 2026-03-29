@@ -254,7 +254,10 @@ export default function Requests() {
                   <button onClick={handleBulkClosed}>Mark as Closed</button>
                 </li>
               </ul>
-              <div className="ag-theme-alpine" style={{ height: 700 }}>
+              <div
+                className={styles["ag-theme-alpine"]}
+                style={{ height: 700 }}
+              >
                 <AgGridReact
                   rowData={data}
                   columnDefs={colDefs}

@@ -9,7 +9,7 @@ export default function ProtectedRoute() {
   }
 
   if (!data?.isAuthenticated) {
-    return <Navigate to="/unauthorized" replace />;
+    return <Navigate to="/sign-in" replace />;
   }
 
   return <Outlet />;
