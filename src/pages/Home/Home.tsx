@@ -1,3 +1,13 @@
+import { useCheckAuthQuery } from "../../services/auth";
+
 export default function Home() {
-  return <p>home</p>;
+  const { data } = useCheckAuthQuery();
+  console.log(data);
+
+  return (
+    <div>
+      <p>home</p>
+      {data && <p>authenticated</p>}
+    </div>
+  );
 }

@@ -1,11 +1,10 @@
-import { useMutation } from "@tanstack/react-query";
-import { login } from "../../services/auth";
 import toast, { Toaster } from "react-hot-toast";
 import { useNavigate } from "react-router";
 import type { AuthData } from "../../types/user";
 import { useForm } from "react-hook-form";
 import Section from "../../components/Section/Section";
 import Container from "../../components/Container/Container";
+import { useLoginMutation } from "../../services/auth";
 
 export default function SignIn() {
   const navigate = useNavigate();
@@ -16,30 +15,27 @@ export default function SignIn() {
     formState: { errors },
   } = useForm<AuthData>();
 
-  const mutation = useMutation({
-    mutationFn: login,
-    onSuccess: () => {
+  const [login, { isLoading }] = useLoginMutation();
+
+  const onSubmit = async (data: AuthData) => {
+    try {
+      const email = data.username.trim();
+      const password = data.password;
+
+      const result = await login({
+        username: email,
+        password: password,
+      }).unwrap(); //перетворює результат RTK Query у нормальний Promise
+
       navigate("/");
-    },
-    onError: (error: Error) => {
-      toast.error(error.message);
-    },
-  });
-
-  const onSubmit = (data: AuthData) => {
-    const email = data.username.trim();
-    const password = data.password;
-    console.log(password);
-
-    mutation.mutate({
-      username: email,
-      password: password,
-    });
+    } catch (err) {
+      console.error(err);
+      toast.error("Login failed");
+    }
   };
 
   return (
-    <main>
-      {" "}
+    <>
       <Toaster />
       <Section>
         <Container>
@@ -60,12 +56,12 @@ export default function SignIn() {
               placeholder="Password"
             />
             {errors.password && <p>{errors.password.message}</p>}
-            <button type="submit" disabled={mutation.isPending}>
+            <button type="submit" disabled={isLoading}>
               Login
             </button>
           </form>
         </Container>
       </Section>
-    </main>
+    </>
   );
 }

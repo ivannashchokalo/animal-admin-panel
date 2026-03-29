@@ -2,22 +2,37 @@ import { Link, NavLink, useNavigate } from "react-router";
 import styles from "./Header.module.scss";
 import Icon from "../Icon/Icon";
 import Container from "../Container/Container";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { logout } from "../../services/auth";
 import toast from "react-hot-toast";
+import { authApi, useLogoutMutation } from "../../services/auth";
+import { useDispatch } from "react-redux";
 
 export default function Header() {
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
+  const dispatch = useDispatch();
+  const [logout] = useLogoutMutation();
 
-  const mutation = useMutation({
-    mutationFn: logout,
-    onSuccess: () => {
-      queryClient.removeQueries({ queryKey: ["user"] });
+  const handleLogout = async () => {
+    try {
+      await logout().unwrap();
+      console.log("logouted");
+
+      dispatch(authApi.util.resetApiState()); // очищає все(кеш), аналогія queryClient.removeQueries({ queryKey: ["user"] });
+
       navigate("/sign-in");
-    },
-    onError: (error: Error) => toast.error(error.message),
-  });
+    } catch (error) {
+      console.log(error);
+
+      toast.error("Logout failed");
+    }
+  };
+  // const mutation = useMutation({
+  //   mutationFn: logout,
+  //   onSuccess: () => {
+  //     queryClient.removeQueries({ queryKey: ["user"] });
+  //     navigate("/sign-in");
+  //   },
+  //   onError: (error: Error) => toast.error(error.message),
+  // });
 
   return (
     <header>
@@ -96,10 +111,7 @@ export default function Header() {
               </button>
             </li>
             <li className={styles.authListItem}>
-              <button
-                className={styles.logout}
-                onClick={() => mutation.mutate()}
-              >
+              <button className={styles.logout} onClick={handleLogout}>
                 Logout
               </button>
             </li>

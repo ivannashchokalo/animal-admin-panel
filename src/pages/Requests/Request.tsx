@@ -197,7 +197,7 @@ export default function Requests() {
   };
 
   return (
-    <main>
+    <>
       <Section>
         <Container>
           {/* <div style={{ display: "flex" }}> */}
@@ -252,6 +252,6 @@ export default function Requests() {
           </button>
         </Modal>
       )}
-    </main>
+    </>
   );
 }

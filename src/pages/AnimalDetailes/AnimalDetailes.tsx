@@ -69,164 +69,160 @@ export default function AnimalDetailes() {
   });
 
   return (
-    <main>
-      <Section>
-        <Toaster />
-        <Container>
-          <div className={styles.btnsWrapper}>
-            <Breadcrumbs
-              items={[
-                { title: "Animals", path: location.state?.from || "/animals" },
-                { title: "Animal details" },
-              ]}
+    <Section>
+      <Toaster />
+      <Container>
+        <div className={styles.btnsWrapper}>
+          <Breadcrumbs
+            items={[
+              { title: "Animals", path: location.state?.from || "/animals" },
+              { title: "Animal details" },
+            ]}
+          />
+          <div className={styles.changeBtnWrapper}>
+            <Select
+              options={options}
+              value={options.find((option) => option.value === data?.status)}
+              onChange={(option: OptionType) => {
+                mutation.mutate({ id: id, status: option.value });
+              }}
+              isSearchable={false}
+              styles={selectStyles}
+              components={{
+                IndicatorSeparator: null,
+                DropdownIndicator,
+              }}
             />
-            <div className={styles.changeBtnWrapper}>
-              <Select
-                options={options}
-                value={options.find((option) => option.value === data?.status)}
-                onChange={(option: OptionType) => {
-                  mutation.mutate({ id: id, status: option.value });
-                }}
-                isSearchable={false}
-                styles={selectStyles}
-                components={{
-                  IndicatorSeparator: null,
-                  DropdownIndicator,
-                }}
-              />
 
-              <button
-                className={styles.editBtn}
-                onClick={() =>
-                  navigate("edit", {
-                    state: { from: location.state?.from || "/animals" },
-                  })
-                }
-              >
-                <Icon name="edit" size={16} className={styles.editIcon} />
-                Edit
-              </button>
-            </div>
+            <button
+              className={styles.editBtn}
+              onClick={() =>
+                navigate("edit", {
+                  state: { from: location.state?.from || "/animals" },
+                })
+              }
+            >
+              <Icon name="edit" size={16} className={styles.editIcon} />
+              Edit
+            </button>
           </div>
+        </div>
 
-          {isLoading && <p>Loading...</p>}
-          {isError && <p>Error!</p>}
-          <Toaster />
-          {data && (
-            <div className={styles.detailesWrapper}>
-              <div>
-                <img
-                  className={styles.animalImg}
-                  src="https://picsum.photos/id/237/200/300"
-                  alt={data.name}
-                  width={300}
-                />
-              </div>
+        {isLoading && <p>Loading...</p>}
+        {isError && <p>Error!</p>}
+        <Toaster />
+        {data && (
+          <div className={styles.detailesWrapper}>
+            <div>
+              <img
+                className={styles.animalImg}
+                src="https://picsum.photos/id/237/200/300"
+                alt={data.name}
+                width={300}
+              />
+            </div>
 
-              <div className={styles.rightColumn}>
-                <div className={styles.contentWrapper}>
-                  <div
-                    className={clsx(styles.flexWrapper, styles.smoleGapWrapper)}
-                  >
-                    <p className={styles.desTitle}>Name:</p>
-                    <h2 className={styles.desText}>{data.name}</h2>
-                  </div>
+            <div className={styles.rightColumn}>
+              <div className={styles.contentWrapper}>
+                <div
+                  className={clsx(styles.flexWrapper, styles.smoleGapWrapper)}
+                >
+                  <p className={styles.desTitle}>Name:</p>
+                  <h2 className={styles.desText}>{data.name}</h2>
+                </div>
 
-                  <div
-                    className={clsx(styles.flexWrapper, styles.smoleGapWrapper)}
-                  >
-                    <p className={styles.desTitle}>Type:</p>
-                    <p className={styles.desText}>{data.type}</p>
-                  </div>
+                <div
+                  className={clsx(styles.flexWrapper, styles.smoleGapWrapper)}
+                >
+                  <p className={styles.desTitle}>Type:</p>
+                  <p className={styles.desText}>{data.type}</p>
+                </div>
 
-                  <div
-                    className={clsx(styles.flexWrapper, styles.smoleGapWrapper)}
-                  >
-                    <p className={styles.desTitle}>Breed:</p>
-                    <p className={styles.desText}>{data.breed}</p>
-                  </div>
-                  <div
-                    className={clsx(styles.flexWrapper, styles.smoleGapWrapper)}
-                  >
-                    <p className={styles.desTitle}>Sex:</p>
-                    <p className={styles.desText}>
-                      {data.sex?.charAt(0).toUpperCase() + data.sex?.slice(1)}
-                    </p>
-                  </div>
+                <div
+                  className={clsx(styles.flexWrapper, styles.smoleGapWrapper)}
+                >
+                  <p className={styles.desTitle}>Breed:</p>
+                  <p className={styles.desText}>{data.breed}</p>
+                </div>
+                <div
+                  className={clsx(styles.flexWrapper, styles.smoleGapWrapper)}
+                >
+                  <p className={styles.desTitle}>Sex:</p>
+                  <p className={styles.desText}>
+                    {data.sex?.charAt(0).toUpperCase() + data.sex?.slice(1)}
+                  </p>
+                </div>
 
-                  {data.birthDate && (
-                    <div
-                      className={clsx(styles.flexWrapper, styles.bigGapWrapper)}
-                    >
-                      <p className={styles.desTitle}>Data of Birth:</p>
-                      <p className={styles.desText}>
-                        {new Date(data?.birthDate).toLocaleDateString()}
-                      </p>
-                    </div>
-                  )}
-
+                {data.birthDate && (
                   <div
                     className={clsx(styles.flexWrapper, styles.bigGapWrapper)}
                   >
-                    <p className={styles.desTitle}>Status:</p>
-                    <span className={clsx(styles.badge, styles[data.status])}>
-                      {data.status?.charAt(0).toUpperCase() +
-                        data.status?.slice(1)}
-                    </span>
+                    <p className={styles.desTitle}>Data of Birth:</p>
+                    <p className={styles.desText}>
+                      {new Date(data?.birthDate).toLocaleDateString()}
+                    </p>
                   </div>
-                  {data.price && (
-                    <div
-                      className={clsx(styles.flexWrapper, styles.bigGapWrapper)}
-                    >
-                      <p className={styles.desTitle}>Price:</p>
-                      <p className={styles.desPrice}>{data?.price}$</p>
-                    </div>
-                  )}
+                )}
+
+                <div className={clsx(styles.flexWrapper, styles.bigGapWrapper)}>
+                  <p className={styles.desTitle}>Status:</p>
+                  <span className={clsx(styles.badge, styles[data.status])}>
+                    {data.status?.charAt(0).toUpperCase() +
+                      data.status?.slice(1)}
+                  </span>
                 </div>
-
-                <p className={clsx(styles.desTitle, styles.desPos)}>
-                  Description:
-                </p>
-                <p className={clsx(styles.desText, styles.desBorder)}>
-                  {data.description}
-                </p>
-                <button
-                  className={styles.deleteBtn}
-                  type="button"
-                  onClick={() => setIsConfirmOpen(true)}
-                >
-                  Delete
-                </button>
+                {data.price && (
+                  <div
+                    className={clsx(styles.flexWrapper, styles.bigGapWrapper)}
+                  >
+                    <p className={styles.desTitle}>Price:</p>
+                    <p className={styles.desPrice}>{data?.price}$</p>
+                  </div>
+                )}
               </div>
-            </div>
-          )}
 
-          {isConfirmOpen && (
-            <Modal onModalClose={() => setIsConfirmOpen(false)}>
-              <Icon name="warning" size={40} className={styles.modalIcon} />
-              <h2 className={styles.modalTitle}>Delete card</h2>
-              <p className={styles.modalText}>
-                Are you sure you want to delete this card?
+              <p className={clsx(styles.desTitle, styles.desPos)}>
+                Description:
               </p>
-              <div className={styles.modalBtnsWrapper}>
-                <button
-                  className={clsx(styles.modalBtn, styles.modalBtnCancel)}
-                  onClick={() => setIsConfirmOpen(false)}
-                >
-                  Cancel
-                </button>
-                <button
-                  className={clsx(styles.modalBtn, styles.modalBtnDelete)}
-                  onClick={() => mutateDelete(id)}
-                >
-                  Delete
-                </button>
-              </div>
-            </Modal>
-          )}
-        </Container>
-      </Section>
-    </main>
+              <p className={clsx(styles.desText, styles.desBorder)}>
+                {data.description}
+              </p>
+              <button
+                className={styles.deleteBtn}
+                type="button"
+                onClick={() => setIsConfirmOpen(true)}
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        )}
+
+        {isConfirmOpen && (
+          <Modal onModalClose={() => setIsConfirmOpen(false)}>
+            <Icon name="warning" size={40} className={styles.modalIcon} />
+            <h2 className={styles.modalTitle}>Delete card</h2>
+            <p className={styles.modalText}>
+              Are you sure you want to delete this card?
+            </p>
+            <div className={styles.modalBtnsWrapper}>
+              <button
+                className={clsx(styles.modalBtn, styles.modalBtnCancel)}
+                onClick={() => setIsConfirmOpen(false)}
+              >
+                Cancel
+              </button>
+              <button
+                className={clsx(styles.modalBtn, styles.modalBtnDelete)}
+                onClick={() => mutateDelete(id)}
+              >
+                Delete
+              </button>
+            </div>
+          </Modal>
+        )}
+      </Container>
+    </Section>
   );
 }
 
