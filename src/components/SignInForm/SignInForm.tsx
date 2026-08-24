@@ -12,7 +12,12 @@ export default function SignInForm() {
     register: registerField,
     handleSubmit,
     formState: { errors },
-  } = useForm<AuthData>();
+  } = useForm<AuthData>({
+    defaultValues: {
+      email: "admin@gmail.com",
+      password: "adminadmin",
+    },
+  });
 
   const [login, { isLoading }] = useLoginMutation();
 
